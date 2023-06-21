@@ -6,7 +6,6 @@ class Position
   def initialize(cellstr: nil, row: nil, col: nil)
     if cellstr
       @row = ROW.index(cellstr[1])
-      #@col = COL.index((9 - cellstr[1].to_i).to_s)
       @col = COL.index(cellstr[0])
     else
       @row = row
