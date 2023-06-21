@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'debug'
 require_relative './lib/reversi_methods'
 
 QUIT_COMMANDS = %w[quit exit q].freeze
@@ -50,6 +50,7 @@ until @quit
   @quit = true and next if QUIT_COMMANDS.include?(command)
 
   begin
+    # binding.break
     if put_stone!(@board, command, @turn_stone_color)
       puts '配置成功、次のターン'
       switch_stone_color

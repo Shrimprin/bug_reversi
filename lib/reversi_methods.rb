@@ -9,8 +9,8 @@ BLANK_CELL = 0
 
 # チェスボードを参考として、マスを 'a8', 'd6' と書いて表現する。
 # 変数名cellstrとして取り扱う。
-ROW = %w[a b c d e f g h].freeze
-COL = %w[8 7 6 5 4 3 2 1].freeze
+COL = %w[a b c d e f g h].freeze
+ROW = %w[8 7 6 5 4 3 2 1].freeze
 
 DIRECTIONS = [
   DIRECTION_TOP_LEFT      = :top_left,
@@ -24,9 +24,9 @@ DIRECTIONS = [
 ].freeze
 
 def output(board)
-  puts "  #{ROW.join(' ')}"
+  puts "  #{COL.join(' ')}"
   board.each.with_index do |row, i|
-    print COL[i].to_s
+    print ROW[i].to_s
     row.each do |cell|
       case cell
       when WHITE_STONE then print ' ○'
@@ -70,10 +70,12 @@ end
 def turn!(board, target_pos, attack_stone_color, direction)
   return false if target_pos.out_of_board?
   return false if target_pos.stone_color(board) == attack_stone_color
+  return false if target_pos.stone_color(board) == BLANK_CELL # 空セルはひっくりかえせないのでfalse
 
   next_pos = target_pos.next_position(direction)
+
   if (next_pos.stone_color(board) == attack_stone_color) || turn!(board, next_pos, attack_stone_color, direction)
-    board[target_pos.col][target_pos.row] = attack_stone_color
+    board[target_pos.row][target_pos.col] = attack_stone_color
     true
   else
     false
@@ -85,14 +87,15 @@ def finished?(board)
 end
 
 def placeable?(board, attack_stone_color)
-  board.each.with_index do |cols, col|
-    cols.each.with_index do |cell, row|
+  board.each.with_index do |rows, row|
+    rows.each.with_index do |cell, col|
       next unless cell == BLANK_CELL # 空セルでなければ判定skip
 
       position = Position.new(row:, col:)
       return true if put_stone!(board, position.to_cellstr, attack_stone_color, false)
     end
   end
+  false
 end
 
 def count_stone(board, stone_color)
